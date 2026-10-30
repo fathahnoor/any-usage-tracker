@@ -1,3 +1,11 @@
+## Final publication check, 31 October 2026
+
+- All three production HTTP readers succeeded with BROWSEROS_MCP_URL deliberately set to an unavailable local endpoint.
+- Compared 47 credential values from the encrypted vault against tracked text files: zero matches. Cookie metadata such as public domains and names is excluded from this secret check.
+- Screenshot masks email and both phone numbers before capture, confirms four provider images decode successfully, and asserts no horizontal or vertical overflow at 755 x 1067.
+- Official provider assets are stored locally; provenance is in public/logos/SOURCES.md.
+- node --test: 21 passed, zero failed.
+
 # Direct API migration and publication verification
 
 Latest check: 31 October 2026, WIB. This section supersedes the earlier browser-backed implementation notes below.
