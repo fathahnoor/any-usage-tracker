@@ -1,0 +1,12 @@
+data/
+*.log
+.env
+.env.*
+!.env.example
+node_modules/
+*.dpapi
+*.har
+*.saz
+*.pem
+*.key
+screenshots/private/
