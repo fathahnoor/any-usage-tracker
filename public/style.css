@@ -32,3 +32,5 @@ main{gap:9px}footer{margin-top:8px}.dashboard{padding-bottom:8px}
 .service-icon img{display:block;width:26px;height:26px;object-fit:contain}.service-icon{overflow:hidden}.service-icon.code{background:#000;border-color:#53606c}.service-icon.code img{width:72px;height:72px;max-width:none}.service-icon.tsel{background:transparent;border:0}.service-icon.tsel img{border-radius:6px}
 
 .service-icon.bima{background:#fff;border-color:#fff}.service-icon.bima img{width:24px;height:24px}
+
+.service-icon.code{position:relative}.service-icon.code img{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%)}
