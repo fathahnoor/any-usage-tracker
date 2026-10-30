@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="id">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>NEXUS | Usage Control</title><link rel="icon" href="/favicon.svg"><link rel="stylesheet" href="/style.css"><script src="/app.js" defer></script></head>
+<body>
+<div class="dashboard">
+<header class="topbar"><div class="brand"><span class="brand-icon">N<span></span></span><div><h1>NEXUS</h1><span class="brand-sub">USAGE CONTROL</span></div></div><div class="header-actions"><time id="clock">WIB</time><button id="refresh-all" class="refresh-all"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5M6 7a7 7 0 0 1 12-1l2 3M4 15l2 3a7 7 0 0 0 12-1"/></svg><span>Sinkronkan</span></button></div></header>
+<main id="main">
+<div class="status-line"><span id="system-state" role="status">Menghubungkan sumber...</span><span class="update-info">Codex 1 mnt <span>/</span> Web 5 mnt</span></div>
+<div id="connection-error" class="connection-error" role="alert" hidden></div>
+<section id="codex" class="panel codex-panel" aria-labelledby="codex-title"><div class="panel-heading"><div class="section-title"><span class="service-icon code">&gt;_</span><h2 id="codex-title">Codex <span class="section-sub">SISA KUOTA</span></h2></div><div class="panel-tools"><span id="codex-status" class="badge">MEMUAT</span><button data-refresh="codex" class="icon-button" aria-label="Perbarui Codex">&#8635;</button></div></div><div id="codex-content" class="loading-content">Membaca kuota Codex...</div><div id="codex-foot" class="panel-foot"></div></section>
+<section id="openrouter" class="panel router-panel" aria-labelledby="router-title"><div class="panel-heading"><div class="section-title"><span class="service-icon router">&#8644;</span><h2 id="router-title">OpenRouter <span class="section-sub">1 TAHUN TERAKHIR</span></h2></div><div class="panel-tools"><span id="openrouter-status" class="badge">MEMUAT</span><button data-refresh="openrouter" class="icon-button" aria-label="Perbarui OpenRouter">&#8635;</button></div></div><div id="openrouter-content" class="loading-content">Membaca aktivitas OpenRouter...</div><div id="openrouter-foot" class="panel-foot"></div></section>
+<div id="mobile" class="mobile-grid">
+<section class="panel carrier-panel telkomsel" aria-labelledby="telkomsel-title"><div class="panel-heading"><div class="section-title"><span class="service-icon tsel">T</span><h2 id="telkomsel-title">Telkomsel</h2></div><div class="panel-tools"><span id="telkomsel-status" class="badge">MEMUAT</span><button data-refresh="telkomsel" class="icon-button" aria-label="Perbarui Telkomsel">&#8635;</button></div></div><div id="telkomsel-content" class="loading-content">Membaca paket Telkomsel...</div><div id="telkomsel-foot" class="panel-foot"></div></section>
+<section class="panel carrier-panel tri" aria-labelledby="tri-title"><div class="panel-heading"><div class="section-title"><span class="service-icon bima">3</span><h2 id="tri-title">Tri <span class="section-sub">BIMA+</span></h2></div><div class="panel-tools"><span id="tri-status" class="badge">MEMUAT</span><button data-refresh="tri" class="icon-button" aria-label="Perbarui Tri">&#8635;</button></div></div><div id="tri-content" class="loading-content">Membaca paket Tri...</div><div id="tri-foot" class="panel-foot"></div></section>
+</div>
+</main>
+<footer><span><i class="local-dot"></i> PERSONAL TELEMETRY</span><span>LOKAL <span>/</span> WAKTU WIB</span></footer>
+</div>
+</body></html>
