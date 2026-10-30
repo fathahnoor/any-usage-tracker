@@ -20,9 +20,9 @@ function createServer(store){return http.createServer((req,res)=>{
   if(key)store.refresh(key,true);else store.refreshAll(true);
   return send(202,{ok:true});
  }
- const files={'/':'index.html','/app.js':'app.js','/style.css':'style.css','/favicon.svg':'favicon.svg'};
+ const files={'/':'index.html','/app.js':'app.js','/style.css':'style.css','/favicon.svg':'favicon.svg','/logos/codex.png':'logos/codex.png','/logos/openrouter.svg':'logos/openrouter.svg','/logos/telkomsel.png':'logos/telkomsel.png','/logos/tri.ico':'logos/tri.ico'};
  if(req.method==='GET'&&Object.hasOwn(files,url.pathname)){
-  const name=files[url.pathname];const type=name.endsWith('.js')?'text/javascript':name.endsWith('.css')?'text/css':name.endsWith('.svg')?'image/svg+xml':'text/html';
+  const name=files[url.pathname];const type=name.endsWith('.js')?'text/javascript':name.endsWith('.css')?'text/css':name.endsWith('.svg')?'image/svg+xml':name.endsWith('.png')?'image/png':name.endsWith('.ico')?'image/x-icon':'text/html';
   return send(200,fs.readFileSync(path.join(__dirname,'public',name)),type+'; charset=utf-8');
  }
  return send(404,{error:'Tidak ditemukan'});

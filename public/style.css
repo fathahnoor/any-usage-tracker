@@ -27,3 +27,8 @@ h1{font-size:18px}.brand-sub{font-size:9px}#clock{font-size:11px}.refresh-all{fo
 @media(max-width:540px){.mobile-grid{flex:none}.spend-value{font-size:31px}.spend-stat strong{font-size:23px}.spend-period{font-size:9px}.gauge{width:94px;height:94px}.gauge-value strong{font-size:35px}.carrier-panel .package-list{flex:none}.tri .package{flex:none}.package{padding-top:9px;padding-bottom:9px}}
 /* Direct API also supplies the Tri active period; reserve room without reducing type. */
 main{gap:9px}footer{margin-top:8px}.dashboard{padding-bottom:8px}
+
+/* Official provider assets, kept inside the existing compact header footprint. */
+.service-icon img{display:block;width:26px;height:26px;object-fit:contain}.service-icon{overflow:hidden}.service-icon.code{background:#000;border-color:#53606c}.service-icon.code img{width:72px;height:72px;max-width:none}.service-icon.tsel{background:transparent;border:0}.service-icon.tsel img{border-radius:6px}
+
+.service-icon.bima{background:#fff;border-color:#fff}.service-icon.bima img{width:24px;height:24px}

@@ -1,0 +1,1 @@
+🌌 Dashboard lokal futuristik untuk kuota Codex, spend OpenRouter, pulsa & paket Telkomsel/Tri. 🚀 Direct HTTP, Windows DPAPI, Node.js tanpa dependencies, dan layout padat untuk setengah layar.
