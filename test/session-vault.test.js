@@ -1,0 +1,9 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const fs=require('node:fs');const os=require('node:os');const path=require('node:path');const crypto=require('node:crypto');
+const {SessionVault}=require('../lib/session-vault');const {CookieJar}=require('../lib/http-session');
+test('sesi disimpan terenkripsi, dapat dipulihkan, dan status tidak berisi credential',async()=>{
+ const key=crypto.randomBytes(32),iv=crypto.randomBytes(16);const codec=async(mode,input)=>{const c=mode==='protect'?crypto.createCipheriv('aes-256-cbc',key,iv):crypto.createDecipheriv('aes-256-cbc',key,iv);return Buffer.concat([c.update(input),c.final()]);};
+ const file=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'nexus-vault-')),'session');const v=new SessionVault({file,crypto:codec});await v.set('tri',{token:'fixture-secret-123',updatedAt:123});assert.equal(fs.readFileSync(file).includes(Buffer.from('fixture-secret-123')),false);assert.deepEqual(await v.status(),{openrouter:{connected:false,updatedAt:null},telkomsel:{connected:false,updatedAt:null},tri:{connected:true,updatedAt:123}});const reopened=new SessionVault({file,crypto:codec});assert.equal((await reopened.get('tri')).token,'fixture-secret-123');await assert.rejects(v.set('__proto__',{}));
+});
+test('cookie hanya dikirim ke domain/path yang sesuai, menerima pembaruan Set-Cookie',()=>{
+ const jar=new CookieJar([{name:'a',value:'fixture',domain:'.example.com',path:'/api',secure:true},{name:'expired',value:'x',domain:'example.com',expires:1}]);assert.equal(jar.header('https://sub.example.com/api/me'),'a=fixture');assert.equal(jar.header('https://evil-example.com/api/me'),'');assert.equal(jar.header('http://example.com/api/me'),'');jar.absorb('https://example.com/api/me',{headers:{getSetCookie:()=>['a=new; Domain=.example.com; Path=/api; Secure; HttpOnly','b=y; Max-Age=100; Path=/']}});assert.equal(jar.header('https://example.com/api/me'),'a=new; b=y');
+});
