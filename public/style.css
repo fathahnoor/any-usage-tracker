@@ -55,9 +55,9 @@ main{gap:9px}footer{margin-top:8px}.dashboard{padding-bottom:8px}
  main{gap:7px}
  .panel-heading,.carrier-panel .panel-heading{padding-top:8px}
  .quota-gauges{padding-top:6px;padding-bottom:6px}
- .gauge{width:76px;height:76px}
- .gauge-value strong{font-size:27px}
- .gauge-value>span{font-size:8px}
+ .gauge{width:112px;height:112px}
+ .gauge-value strong{font-size:38px}
+ .gauge-value>span{font-size:10px}
  .spend-content{padding-top:8px;padding-bottom:8px}
  .spend-value{font-size:36px}
  .carrier-top{padding-top:6px;padding-bottom:6px}
