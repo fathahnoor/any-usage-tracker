@@ -39,7 +39,29 @@ main{gap:9px}footer{margin-top:8px}.dashboard{padding-bottom:8px}
 .history-panel summary:focus-visible{outline:2px solid var(--cyan);outline-offset:-3px}
 .history-panel summary span{color:var(--muted);font-size:11px;font-weight:400;margin-left:8px}
 .history-content{padding:0 16px 12px;color:var(--muted);font-size:12px}
+.history-content h3{margin:12px 0 4px;color:var(--text);font-size:13px}
 .history-table-wrap{overflow-x:auto;margin-top:8px}
 .history-content table{border-collapse:collapse;width:100%;text-align:left;white-space:nowrap}
 .history-content th,.history-content td{padding:6px 8px;border-top:1px solid var(--line)}
 .history-content tbody th{color:var(--text)}
+
+/* Keep the dashboard in place while viewing its historical records. */
+.history-panel{z-index:2}
+.history-content{position:absolute;top:100%;left:0;right:0;padding:10px 16px 12px;background:#101e2a;border:1px solid var(--line);border-radius:0 0 10px 10px;box-shadow:0 12px 24px #0009}
+.history-content table{white-space:normal}
+@media(min-width:541px) and (max-height:1200px){
+ .dashboard{padding-top:8px;padding-bottom:6px}
+ .topbar{padding-bottom:8px}
+ main{gap:7px}
+ .panel-heading,.carrier-panel .panel-heading{padding-top:8px}
+ .quota-gauges{padding-top:6px;padding-bottom:6px}
+ .gauge{width:76px;height:76px}
+ .gauge-value strong{font-size:27px}
+ .gauge-value>span{font-size:8px}
+ .spend-content{padding-top:8px;padding-bottom:8px}
+ .spend-value{font-size:36px}
+ .carrier-top{padding-top:6px;padding-bottom:6px}
+ .package{padding-top:5px;padding-bottom:5px}
+ .panel-foot,.carrier-panel .panel-foot{min-height:32px;padding-top:3px;padding-bottom:3px}
+ footer{margin-top:6px}
+}
