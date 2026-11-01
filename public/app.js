@@ -77,7 +77,7 @@ function updateSource(key, s) {
 function updateState(next) {
   state = next;
   const history = state.codexHistory || [];
-  const historical = [{account:'rpla1',primary:'~100%',secondary:'~100%',reset:'31/10 18:14'},{account:'rpla2',primary:'~100%',secondary:'~21%',reset:'31/10 18:03'},{account:'rpla3',primary:'~100%',secondary:'~100%',reset:'31/10 18:17'},{account:'rpla4',primary:'100%',secondary:'100%',reset:'31/10 18:21'}];
+  const historical = [{account:'rpla1',primary:'~100%',secondary:'~100%',reset:'31/10 18:14',resetAt:'2026-10-31T18:14:00+07:00'},{account:'rpla2',primary:'~100%',secondary:'~21%',reset:'31/10 18:03',resetAt:'2026-10-31T18:03:00+07:00'},{account:'rpla3',primary:'~100%',secondary:'~100%',reset:'31/10 18:17',resetAt:'2026-10-31T18:17:00+07:00'},{account:'rpla4',primary:'100%',secondary:'100%',reset:'31/10 18:21',resetAt:'2026-10-31T18:21:00+07:00'}];
   const latest = new Map();
   for (const row of history) {
     if (typeof row.account !== 'string' || !row.account.trim()) continue;
@@ -99,6 +99,11 @@ function updateState(next) {
     return {label:old.account,row,old};
   });
   for (const row of latest.values()) rows.push({label:row.account,row});
+  const resetTime = ({row,old}) => {
+    const value = row ? row.primary?.resetsAt : Date.parse(old.resetAt) / 1000;
+    return Number.isFinite(value) && value > 0 ? value : Infinity;
+  };
+  rows.sort((a,b) => resetTime(a) - resetTime(b));
   $('history-count').textContent = rows.length + ' akun';
   const recordedAt = value => new Date(value).toLocaleString('id-ID', {timeZone:'Asia/Jakarta',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
   $('history-accounts').innerHTML = rows.map(({label,row,old}) => `<tr><th scope="row">${esc(label)}</th><td>${row ? (row.primary ? esc(row.primary.remaining) + '%' : '-') : old.primary}</td><td>${row ? (row.secondary ? esc(row.secondary.remaining) + '%' : '-') : old.secondary}</td><td>${row ? (row.primary?.resetsAt ? esc(recordedAt(row.primary.resetsAt * 1000)) : '-') : old.reset}</td><td>${row ? esc(recordedAt(row.observedAt)) + ' WIB' : 'Screenshot lama, waktu tidak diketahui'}</td></tr>`).join('');
