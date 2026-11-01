@@ -31,7 +31,7 @@ function dateLabel(value) {
   return new Date(value).toLocaleDateString('id-ID', {timeZone:'Asia/Jakarta', day:'numeric', month:'short', year:'numeric'});
 }
 function renderRouter(d) {
-  return `<div class="spend-content"><div><div class="spend-label">Total spend / USD</div><div class="spend-value"><span class="currency">$</span>${usd(d.totalSpend)}</div><div class="spend-period">${esc(dateLabel(d.range.start))} - ${esc(dateLabel(d.range.end))}</div></div><div class="spend-stat"><strong title="${fmt.format(d.totalTokens)} token">${compact.format(d.totalTokens)}</strong><small>TOTAL TOKEN</small></div><div class="spend-stat"><strong title="${fmt.format(d.totalRequests)} request">${compact.format(d.totalRequests)}</strong><small>REQUEST</small></div></div>`;
+  return `<div class="spend-content"><div><div class="spend-label">Total spend / USD</div><div class="spend-value"><span class="currency">$</span>${usd(d.totalSpend)}</div><div class="spend-period">${esc(dateLabel(d.range.start))} - ${esc(dateLabel(d.range.end))}</div></div><div class="spend-stat"><strong title="${fmt.format(d.totalTokens)} token">${compact.format(d.totalTokens)}</strong><small>TOTAL TOKEN</small></div><div class="spend-stat"><strong title="${fmt.format(d.totalRequests)} request">${compact.format(d.totalRequests)}</strong><small>REQUEST</small></div></div><div class="account-line"><span class="account-email">${esc(d.account?.email || 'Akun OpenRouter belum terbaca')}</span></div>`;
 }
 function packageHtml(p) {
   const a = p.allowances?.[0];
