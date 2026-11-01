@@ -24,7 +24,7 @@ async function importSessions({probe=false,providers=Object.keys(PROFILES)}={}){
    }
    let session;
    if(provider==='tri'){
-    const storage=unwrap(await neo.run(`return await browser.page(${page.pageId}).evaluate(()=>Object.fromEntries(['b-X-IMI-TOKEN','b-FINGERPRINT','b-MSISDN','b-MSISDNCHILD','b-LANG','b-FIREBASE_INSTALLATION_ID'].map(k=>[k,localStorage.getItem(k)])));`));
+    const storage=unwrap(await neo.run(`return await browser.page(${page.pageId}).evaluateInPage(()=>Object.fromEntries(['b-X-IMI-TOKEN','b-FINGERPRINT','b-MSISDN','b-MSISDNCHILD','b-LANG','b-FIREBASE_INSTALLATION_ID'].map(k=>[k,localStorage.getItem(k)])));`));
     // Raw selected values are retained encrypted. The provider adapter decodes them.
     session={storage};
    }else{
@@ -32,11 +32,11 @@ async function importSessions({probe=false,providers=Object.keys(PROFILES)}={}){
     const cookies=cookieResult.cookies;
     if(!Array.isArray(cookies)||!cookies.length)throw new Error('Cookie migration unavailable');
     if(provider==='openrouter'){
-     const account=unwrap(await neo.run(`return await browser.page(${page.pageId}).evaluate(async()=>({sessionId:window.Clerk?.session?.id,sessionToken:await window.Clerk?.session?.getToken({skipCache:true}),organizationId:window.Clerk?.session?.lastActiveOrganizationId||null,userAgent:navigator.userAgent}));`));
+     const account=unwrap(await neo.run(`return await browser.page(${page.pageId}).evaluateInPage(async()=>({sessionId:window.Clerk?.session?.id,sessionToken:await window.Clerk?.session?.getToken({skipCache:true}),organizationId:window.Clerk?.session?.lastActiveOrganizationId||null,userAgent:navigator.userAgent}));`));
      if(!account.sessionId||!account.sessionToken)throw new Error('Session unavailable');
      session={...account,cookies};
     }else{
-     const account=unwrap(await neo.run(`return await browser.page(${page.pageId}).evaluate(()=>({deviceId:localStorage.getItem('deviceId'),userAgent:navigator.userAgent}));`));
+     const account=unwrap(await neo.run(`return await browser.page(${page.pageId}).evaluateInPage(()=>({deviceId:localStorage.getItem('deviceId'),userAgent:navigator.userAgent}));`));
      if(!account.deviceId)throw new Error('Device session unavailable');
      session={...account,cookies};
     }
