@@ -50,7 +50,6 @@ main{gap:9px}footer{margin-top:8px}.dashboard{padding-bottom:8px}
 .history-content{position:absolute;top:100%;left:0;right:0;padding:10px 16px 12px;background:#101e2a;border:1px solid var(--line);border-radius:0 0 10px 10px;box-shadow:0 12px 24px #0009}
 .history-content table{white-space:normal}
 .history-content{max-height:75vh;overflow-y:auto}
-.history-live{max-height:180px;overflow:auto}
 @media(min-width:541px) and (max-height:1200px){
  .dashboard{padding-top:8px;padding-bottom:6px}
  .topbar{padding-bottom:8px}

@@ -77,13 +77,31 @@ function updateSource(key, s) {
 function updateState(next) {
   state = next;
   const history = state.codexHistory || [];
-  $('history-count').textContent = (history.length + 6) + ' catatan';
   const historical = [{account:'rpla1',primary:'~100%',secondary:'~100%',reset:'31/10 18:14'},{account:'rpla2',primary:'~100%',secondary:'~21%',reset:'31/10 18:03'},{account:'rpla3',primary:'~100%',secondary:'~100%',reset:'31/10 18:17'},{account:'rpla4',primary:'100%',secondary:'100%',reset:'31/10 18:21'}];
-  $('history-accounts').innerHTML = historical.map(old => {
-    const row = [...history].reverse().find(item => item.account.toLowerCase() === `praktikum.${old.account}@tass.telkomuniversity.ac.id`);
-    return `<tr><th scope="row">${old.account}</th><td>${row ? (row.primary ? esc(row.primary.remaining) + '%' : '-') : old.primary}</td><td>${row ? (row.secondary ? esc(row.secondary.remaining) + '%' : '-') : old.secondary}</td><td>${row ? (row.primary?.resetsAt ? esc(time(row.primary.resetsAt * 1000)) : '-') : old.reset}</td><td>${row ? esc(time(row.observedAt)) + ' WIB, Codex' : 'Screenshot lama, waktu tidak diketahui'}</td></tr>`;
-  }).join('');
-  $('history-rows').innerHTML = history.length ? [...history].reverse().map(row => `<tr><th scope="row">${esc(row.account)}</th><td>${esc(time(row.observedAt))}</td><td>${row.primary ? esc(row.primary.remaining) + '%' : '-'}</td><td>${row.secondary ? esc(row.secondary.remaining) + '%' : '-'}</td><td>${row.primary?.resetsAt ? esc(time(row.primary.resetsAt * 1000)) : '-'}</td></tr>`).join('') : '<tr><td colspan="5">Belum ada pembaruan tercatat.</td></tr>';
+  const latest = new Map();
+  for (const row of history) {
+    if (typeof row.account !== 'string' || !row.account.trim()) continue;
+    const key = row.account.toLowerCase();
+    if (!latest.has(key) || row.observedAt > latest.get(key).observedAt) latest.set(key, row);
+  }
+  const codex = state.sources.codex;
+  if (codex.data?.historyAccountVerified && codex.data.account?.email && codex.fetchedAt) {
+    const rl = codex.data.data?.rateLimits || {};
+    const window = w => w && Number.isFinite(w.usedPercent) && w.usedPercent >= 0 && w.usedPercent <= 100 ? {remaining:100-w.usedPercent,resetsAt:w.resetsAt} : null;
+    const row = {account:codex.data.account.email,observedAt:codex.fetchedAt,primary:window(rl.primary),secondary:window(rl.secondary)};
+    const key = row.account.toLowerCase();
+    if ((row.primary || row.secondary) && (!latest.has(key) || row.observedAt > latest.get(key).observedAt)) latest.set(key,row);
+  }
+  const rows = historical.map(old => {
+    const key = `praktikum.${old.account}@tass.telkomuniversity.ac.id`;
+    const row = latest.get(key);
+    latest.delete(key);
+    return {label:old.account,row,old};
+  });
+  for (const row of latest.values()) rows.push({label:row.account,row});
+  $('history-count').textContent = rows.length + ' akun';
+  const recordedAt = value => new Date(value).toLocaleString('id-ID', {timeZone:'Asia/Jakarta',day:'2-digit',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
+  $('history-accounts').innerHTML = rows.map(({label,row,old}) => `<tr><th scope="row">${esc(label)}</th><td>${row ? (row.primary ? esc(row.primary.remaining) + '%' : '-') : old.primary}</td><td>${row ? (row.secondary ? esc(row.secondary.remaining) + '%' : '-') : old.secondary}</td><td>${row ? (row.primary?.resetsAt ? esc(recordedAt(row.primary.resetsAt * 1000)) : '-') : old.reset}</td><td>${row ? esc(recordedAt(row.observedAt)) + ' WIB' : 'Screenshot lama, waktu tidak diketahui'}</td></tr>`).join('');
   const historyError = state.sources.codex.historyError;
   $('history-error').hidden = !historyError;
   $('history-error').textContent = historyError || '';
