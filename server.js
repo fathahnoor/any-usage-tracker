@@ -11,6 +11,14 @@ function createServer(store){return http.createServer((req,res)=>{
  const send=(status,body,type='application/json; charset=utf-8')=>{res.writeHead(status,{...headers,'Content-Type':type});res.end(type.startsWith('application/json')?JSON.stringify(body):body);};
  if(!allowedHosts.has(req.headers.host))return send(403,{error:'Host ditolak'});
  const url=new URL(req.url,'http://127.0.0.1:'+port);
+ if(req.method==='POST'&&url.pathname==='/api/reconnect'){
+  const origin=req.headers.origin;
+  if((origin&&!['http://127.0.0.1:'+port,'http://localhost:'+port].includes(origin))||!req.headers['content-type']?.startsWith('application/json'))return send(403,{error:'Permintaan ditolak'});
+  const key=url.searchParams.get('source');
+  if(!['openrouter','telkomsel','tri'].includes(key))return send(400,{error:'Sumber sesi tidak dikenal'});
+  store.reconnect(key).then(result=>send(result.error?409:200,result.error?{ok:false,error:result.error}:{ok:true})).catch(()=>send(500,{ok:false,error:'Akun belum dapat dihubungkan. Coba lagi.'}));
+  return;
+ }
  if(req.method==='GET'&&url.pathname==='/api/state')return send(200,store.snapshot());
  if(req.method==='POST'&&url.pathname==='/api/refresh'){
   const origin=req.headers.origin;

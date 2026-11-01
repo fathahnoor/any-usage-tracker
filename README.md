@@ -33,13 +33,17 @@ Buka [dashboard lokal](http://127.0.0.1:8792/). Repo privat memerlukan akses Git
 
 🖱️ Untuk pemakaian harian, klik dua kali **Buka-Usage-Tracker.cmd**. Launcher menjalankan server di latar belakang dan memakai ulang server yang sudah berjalan. Server Codex lama pada port 8791 tidak diperlukan.
 
-## 🔑 Hubungkan akun satu kali
+## 🔑 Hubungkan atau login ulang akun
 
-Sesi akun OpenRouter, Telkomsel dan Tri perlu diimpor pada komputer yang menjalankan dashboard:
+Untuk OpenRouter, Telkomsel dan Tri, gunakan tombol **Hubungkan ulang** di kartu masing-masing:
 
-1. 🌐 Buka BrowserOS neo dan login ke [OpenRouter Activity](https://openrouter.ai/activity), [Telkomsel](https://www.telkomsel.com/user/simpati) dan [bima+](https://bimatri.ioh.co.id/#/account/package). Biarkan ketiga tab tersedia saat impor.
-2. 🔌 Pastikan MCP BrowserOS neo aktif. Alamat defaultnya `http://127.0.0.1:9010/mcp`.
-3. 📥 Jalankan perintah berikut dari folder proyek:
+1. Buka NEXUS di BrowserOS neo, lalu klik **Hubungkan ulang** pada akun yang ingin diperbarui.
+2. Klik **1. Buka login**, selesaikan login sampai data akun terlihat, dan biarkan tab itu terbuka.
+3. Kembali ke NEXUS, klik **2. Saya sudah login**, lalu tunggu pesan berhasil. Data langsung diperbarui tanpa terminal atau restart server.
+
+BrowserOS neo dan koneksi MCP-nya harus aktif saat menghubungkan akun. Alamat default MCP adalah `http://127.0.0.1:9010/mcp`. Jika login belum selesai atau koneksi belum tersedia, dialog menampilkan petunjuk untuk mencoba lagi. Sesi lama baru diganti setelah sesi baru berhasil membaca data dari layanan terkait.
+
+Untuk impor manual dari terminal, perintah lama tetap tersedia:
 
 ```powershell
 node tools/import-browser-sessions.js
@@ -56,7 +60,7 @@ node tools/import-browser-sessions.js
 - 📶 **Telkomsel dan Tri** dibaca melalui endpoint yang digunakan situs sumber. Paket dengan syarat penggunaan berbeda tetap ditampilkan terpisah.
 - ⏱️ Tombol sinkronisasi dapat meminta pembacaan lebih cepat. Jika sumber gagal, data terakhir tetap terlihat dengan status **DATA LAMA**, waktu pemeriksaan dan pesan kesalahan. Kegagalan tidak diubah menjadi angka nol.
 
-Endpoint privat dan mekanisme sesi dapat berubah. Jika login tidak lagi valid, masuk kembali di situs sumber lalu ulangi impor sesi. Kuota khusus mengikuti ketentuan operator. Dashboard mencakup akun Codex, OpenRouter dan kedua operator yang terhubung. 🧭
+Endpoint privat dan mekanisme sesi dapat berubah. Jika login tidak lagi valid, gunakan **Hubungkan ulang** pada kartu sumber. Kuota khusus mengikuti ketentuan operator. Dashboard mencakup akun Codex, OpenRouter dan kedua operator yang terhubung. 🧭
 
 ## 🛠️ Pengembangan dan konfigurasi
 

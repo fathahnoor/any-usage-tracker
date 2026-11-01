@@ -1,5 +1,5 @@
 'use strict';
-// One-time, user-authorized local migration. Never print session values.
+// User-authorized local session import. Never print session values.
 const {Neo}=require('../lib/neo');
 const {SessionVault}=require('../lib/session-vault');
 const PROFILES={
@@ -8,15 +8,15 @@ const PROFILES={
  tri:{host:'bimatri.ioh.co.id',urls:['https://bimatri.ioh.co.id/']},
 };
 function unwrap(value){return Neo.value(value);}
-async function importSessions({probe=false,providers=Object.keys(PROFILES)}={}){
- const neo=new Neo(),vault=new SessionVault();
+async function importSessions({probe=false,providers=Object.keys(PROFILES),neo=new Neo(),vault=new SessionVault(),validateSession=async(p,s)=>s}={}){
+ for(const provider of providers)if(!Object.hasOwn(PROFILES,provider))throw new Error('Unknown provider');
  const pages=await neo.run('return await browser.pages.list();');
  const results={};
  for(const provider of providers){
   const profile=PROFILES[provider];
   if(!profile)throw new Error('Unknown provider');
   const page=pages.filter(p=>{try{return new URL(p.url).hostname===profile.host&&(provider!=='openrouter'||new URL(p.url).pathname.startsWith('/activity'));}catch{return false;}}).sort((a,b)=>b.pageId-a.pageId)[0];
-  if(!page){results[provider]={ok:false,reason:'Halaman login sumber tidak tersedia untuk migrasi pertama'};continue;}
+  if(!page){results[provider]={ok:false,reason:'Buka halaman login di BrowserOS neo, selesaikan login, dan biarkan tabnya terbuka.'};continue;}
   try{
    if(probe){
     const shape=await neo.run(`const p=browser.page(${page.pageId});const r=await p.cdp('Network.getCookies',JSON.stringify({urls:${JSON.stringify(profile.urls)}}));return {keys:Object.keys(r),cookieCount:r.cookies?.length,cookieNames:r.cookies?.map(c=>c.name)};`);
@@ -42,9 +42,10 @@ async function importSessions({probe=false,providers=Object.keys(PROFILES)}={}){
     }
    }
    session.updatedAt=Date.now();
+   session=await validateSession(provider,session);
    await vault.set(provider,session);
    results[provider]={ok:true,encrypted:true};
-  }catch{results[provider]={ok:false,reason:'Migrasi sesi belum berhasil; nilai credential tidak dicatat'};}
+  }catch{results[provider]={ok:false,reason:'Sesi belum dapat diverifikasi. Pastikan login selesai dan data akun terlihat, lalu coba lagi.'};}
  }
  return results;
 }

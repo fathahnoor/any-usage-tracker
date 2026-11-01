@@ -10,6 +10,8 @@ const sourceUrls = {openrouter:'https://openrouter.ai/activity', telkomsel:'http
 const externalIcon = '<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M11 3h6v6M17 3l-8 8M8 3H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-4"/></svg>';
 let state = null;
 const signatures = {};
+let reconnectKey = null;
+let reconnecting = false;
 function remaining(seconds) {
   const s = Math.max(0, Math.floor(seconds));
   if (!s) return 'Menunggu reset';
@@ -65,6 +67,17 @@ function updateSource(key, s) {
   }
   const foot = $(key + '-foot');
   foot.innerHTML = `<span>${s.fetchedAt ? 'Diperiksa ' + esc(time(s.fetchedAt)) + ' WIB' : 'Belum tersinkron'}</span>${sourceUrls[key] ? `<a class="detail-button" href="${esc(detailUrl(key, s.data))}" target="_blank" rel="noopener noreferrer" aria-label="Lihat detail ${key === 'tri' ? 'Tri' : key === 'telkomsel' ? 'Telkomsel' : 'OpenRouter'} di situs sumber">Detail ${externalIcon}</a>` : '<span>CLI RESMI</span>'}`;
+  if (sourceUrls[key]) {
+    const actions = document.createElement('div');
+    actions.className = 'source-actions';
+    const connect = document.createElement('button');
+    connect.className = 'detail-button reconnect-button';
+    connect.textContent = 'Hubungkan ulang';
+    connect.setAttribute('aria-label', 'Hubungkan ulang ' + ({tri:'Tri',telkomsel:'Telkomsel',openrouter:'OpenRouter'}[key]));
+    connect.addEventListener('click', () => openReconnect(key));
+    actions.append(connect, foot.querySelector('a'));
+    foot.append(actions);
+  }
   const old = foot.parentElement.querySelector('.error-banner');
   if (old) old.remove();
   if (s.data && (s.error || s.stale)) {
@@ -155,6 +168,45 @@ async function refresh(key) {
 }
 for (const b of document.querySelectorAll('[data-refresh]')) b.addEventListener('click', () => refresh(b.dataset.refresh));
 $('refresh-all').addEventListener('click', () => refresh());
+function openReconnect(key) {
+  reconnectKey = key;
+  const label = {tri:'Tri',telkomsel:'Telkomsel',openrouter:'OpenRouter'}[key];
+  $('reconnect-title').textContent = 'Hubungkan ulang ' + label;
+  $('reconnect-login').href = sourceUrls[key];
+  $('reconnect-result').textContent = '';
+  $('reconnect-submit').disabled = false;
+  $('reconnect-submit').textContent = '2. Saya sudah login';
+  $('reconnect-dialog').showModal();
+}
+$('reconnect-dialog').addEventListener('cancel', event => { if (reconnecting) event.preventDefault(); });
+$('reconnect-submit').addEventListener('click', async () => {
+  if (reconnecting) return;
+  reconnecting = true;
+  $('reconnect-submit').disabled = true;
+  $('reconnect-close').disabled = true;
+  $('reconnect-submit').textContent = 'Menghubungkan...';
+  $('reconnect-result').textContent = 'Memeriksa login dan mengambil data terbaru. Tunggu sampai selesai.';
+  $('reconnect-result').className = '';
+  let success = false;
+  try {
+    const response = await fetch('/api/reconnect?source=' + encodeURIComponent(reconnectKey), {method:'POST',headers:{'Content-Type':'application/json'},body:'{}',signal:AbortSignal.timeout(180000)});
+    const result = await response.json();
+    if (!response.ok || !result.ok) throw new Error(result.error || 'Akun belum dapat dihubungkan. Coba lagi.');
+    success = true;
+    $('reconnect-result').className = 'ok';
+    $('reconnect-result').textContent = 'Berhasil terhubung. Data terbaru sudah diterima. Anda boleh menutup tab login.';
+    const current = await fetch('/api/state');
+    if (current.ok) updateState(await current.json());
+  } catch (error) {
+    $('reconnect-result').className = 'warn';
+    $('reconnect-result').textContent = success ? 'Akun terhubung. Dashboard akan diperbarui pada sinkronisasi berikutnya.' : error.name === 'TimeoutError' || error instanceof TypeError ? 'Koneksi terputus atau terlalu lama. Pastikan NEXUS dan BrowserOS neo berjalan, lalu coba lagi.' : error.message;
+  } finally {
+    reconnecting = false;
+    $('reconnect-close').disabled = false;
+    $('reconnect-submit').disabled = success;
+    $('reconnect-submit').textContent = success ? 'Sudah terhubung' : 'Coba lagi';
+  }
+});
 function tick() {
   $('clock').textContent = new Date().toLocaleTimeString('en-GB', {timeZone:'Asia/Jakarta'}) + ' WIB';
   for (const el of document.querySelectorAll('[data-reset]')) el.textContent = remaining(Number(el.dataset.reset) - Date.now() / 1000);
